@@ -403,6 +403,127 @@
             letter-spacing: 2px;
         }
 
+        /* Anonymous message form */
+        .anon-message {
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .anon-message .form-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .anon-message .form-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .anon-message .form-header .msg-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(253, 121, 168, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .anon-message .form-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .anon-message .form-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .anon-message textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .anon-message textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .anon-message textarea:focus {
+            border-color: var(--primary-light);
+        }
+
+        .anon-message .send-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .anon-message .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.35);
+        }
+
+        .anon-message .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .anon-message .msg-status {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .anon-message .msg-status.success {
+            display: block;
+            background: rgba(0, 206, 201, 0.1);
+            color: #00cec9;
+            border: 1px solid rgba(0, 206, 201, 0.2);
+        }
+
+        .anon-message .msg-status.error {
+            display: block;
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+            border: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .container {
@@ -610,6 +731,27 @@
 
         </div>
 
+        <!-- Anonymous Message -->
+        <div class="section-title fade-in">Send Anonymous Message</div>
+        <div class="anon-message fade-in">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="msg-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div>
+                        <h3>Anonymous Message</h3>
+                        <p>Send me a secret message — I won't know who sent it!</p>
+                    </div>
+                </div>
+                <textarea id="anonMessage" placeholder="Type your anonymous message here..." maxlength="1000"></textarea>
+                <button class="send-btn" id="sendBtn" onclick="sendAnonymousMessage()">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+                <div class="msg-status" id="msgStatus"></div>
+            </div>
+        </div>
+
         <!-- Visitor Counter -->
         <div class="visitor-counter fade-in">
             <div class="counter-icon">
@@ -629,6 +771,57 @@
     </div>
 
     <script>
+        // Anonymous message via Telegram Bot
+        async function sendAnonymousMessage() {
+            const textarea = document.getElementById('anonMessage');
+            const btn = document.getElementById('sendBtn');
+            const status = document.getElementById('msgStatus');
+            const message = textarea.value.trim();
+
+            if (!message) {
+                status.className = 'msg-status error';
+                status.textContent = 'Please type a message first!';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            status.className = 'msg-status';
+            status.style.display = 'none';
+
+            const botToken = '8176614642:AAFnvzKiUkkg3eVd7rzdXOTaEWn4QRnFIoM';
+            const chatId = '629605778';
+            const text = '💬 *Anonymous Message*\n\n' + message + '\n\n_Sent from bunraonepiece.me_';
+
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: text,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.ok) {
+                    status.className = 'msg-status success';
+                    status.textContent = '✅ Message sent successfully! Thank you!';
+                    textarea.value = '';
+                } else {
+                    throw new Error(data.description || 'Failed to send');
+                }
+            } catch (e) {
+                status.className = 'msg-status error';
+                status.textContent = '❌ Failed to send. Please try again later.';
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+        }
+
         // Visitor counter
         (async function() {
             const el = document.getElementById('visitor-count');
