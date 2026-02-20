@@ -370,6 +370,25 @@
             backdrop-filter: blur(10px);
         }
 
+        .stats-row {
+            display: flex;
+            gap: 14px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
         .visitor-counter .counter-icon {
             width: 44px;
             height: 44px;
@@ -752,14 +771,25 @@
             </div>
         </div>
 
-        <!-- Visitor Counter -->
-        <div class="visitor-counter fade-in">
-            <div class="counter-icon">
-                <i class="fas fa-eye"></i>
+        <!-- Stats Row -->
+        <div class="stats-row fade-in">
+            <div class="stat-card">
+                <div class="counter-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="counter-info">
+                    <div class="count" id="visitor-count">...</div>
+                    <div class="count-label">Visitors</div>
+                </div>
             </div>
-            <div class="counter-info">
-                <div class="count" id="visitor-count">...</div>
-                <div class="count-label">Total Visitors</div>
+            <div class="stat-card">
+                <div class="counter-icon" style="background: rgba(253, 121, 168, 0.15); color: var(--accent);">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="counter-info">
+                    <div class="count" id="message-count">...</div>
+                    <div class="count-label">Messages</div>
+                </div>
             </div>
         </div>
 
@@ -810,6 +840,15 @@
                     status.className = 'msg-status success';
                     status.textContent = '✅ Message sent successfully! Thank you!';
                     textarea.value = '';
+                    // Increment message counter
+                    try {
+                        const cRes = await fetch('https://api.counterapi.dev/v1/bunraonepiece.me/messages/up');
+                        const cData = await cRes.json();
+                        if (cData.count) {
+                            document.getElementById('message-count').textContent = cData.count.toLocaleString();
+                            localStorage.setItem('messageCount', cData.count);
+                        }
+                    } catch(ce) {}
                 } else {
                     throw new Error(data.description || 'Failed to send');
                 }
@@ -825,8 +864,9 @@
         // Visitor counter
         (async function() {
             const el = document.getElementById('visitor-count');
+            const msgEl = document.getElementById('message-count');
             
-            function animateCount(count) {
+            function animateCount(element, count) {
                 let current = 0;
                 const step = Math.max(1, Math.floor(count / 40));
                 const timer = setInterval(() => {
@@ -835,10 +875,11 @@
                         current = count;
                         clearInterval(timer);
                     }
-                    el.textContent = current.toLocaleString();
+                    element.textContent = current.toLocaleString();
                 }, 30);
             }
 
+            // Fetch visitor count
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -852,18 +893,37 @@
                 const data = await res.json();
                 const count = data.count || 0;
                 localStorage.setItem('visitorCount', count);
-                animateCount(count);
+                animateCount(el, count);
             } catch (e) {
-                // Fallback: show cached count or use image-based counter
                 const cached = localStorage.getItem('visitorCount');
                 if (cached) {
-                    animateCount(parseInt(cached));
+                    animateCount(el, parseInt(cached));
                 } else {
-                    // Use hits.sh image-based counter as fallback
-                    const img = new Image();
-                    img.src = 'https://hits.sh/bunraonepiece.me.svg?label=visitors&color=6c5ce7';
                     el.textContent = '0';
-                    animateCount(1);
+                }
+            }
+
+            // Fetch message count
+            try {
+                const controller2 = new AbortController();
+                const timeoutId2 = setTimeout(() => controller2.abort(), 5000);
+                
+                const res2 = await fetch('https://api.counterapi.dev/v1/bunraonepiece.me/messages/get', {
+                    signal: controller2.signal
+                });
+                clearTimeout(timeoutId2);
+                
+                if (!res2.ok) throw new Error('API error');
+                const data2 = await res2.json();
+                const msgCount = data2.count || 0;
+                localStorage.setItem('messageCount', msgCount);
+                animateCount(msgEl, msgCount);
+            } catch (e) {
+                const cached2 = localStorage.getItem('messageCount');
+                if (cached2) {
+                    animateCount(msgEl, parseInt(cached2));
+                } else {
+                    msgEl.textContent = '0';
                 }
             }
         })();
