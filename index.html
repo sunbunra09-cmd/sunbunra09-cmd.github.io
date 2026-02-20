@@ -357,19 +357,6 @@
         .fade-in:nth-child(10) { animation-delay: 1.0s; }
 
         /* Visitor counter */
-        .visitor-counter {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 30px;
-            padding: 18px 30px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-        }
-
         .stats-row {
             display: flex;
             gap: 14px;
@@ -381,45 +368,123 @@
             flex: 1;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 18px 20px;
+            gap: 14px;
+            padding: 22px 22px;
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 16px;
             backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .visitor-counter .counter-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: rgba(108, 92, 231, 0.15);
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .stat-card.visitors-card::before {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .stat-card.messages-card::before {
+            background: linear-gradient(90deg, var(--accent), #fab1a0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-card.visitors-card .stat-icon {
+            background: rgba(108, 92, 231, 0.15);
             color: var(--primary-light);
         }
 
-        .visitor-counter .counter-info {
+        .stat-card.messages-card .stat-icon {
+            background: rgba(253, 121, 168, 0.15);
+            color: var(--accent);
+        }
+
+        .stat-card .stat-info {
             text-align: left;
         }
 
-        .visitor-counter .counter-info .count {
-            font-size: 22px;
+        .stat-card .stat-number {
+            font-size: 26px;
             font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .stat-card.visitors-card .stat-number {
             background: linear-gradient(135deg, #fff, var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.2;
         }
 
-        .visitor-counter .counter-info .count-label {
+        .stat-card.messages-card .stat-number {
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .stat-label {
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .stat-card .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            animation: pulse 2s infinite;
+        }
+
+        .stat-card.visitors-card .stat-dot {
+            background: var(--primary-light);
+            box-shadow: 0 0 8px var(--primary-light);
+        }
+
+        .stat-card.messages-card .stat-dot {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                flex-direction: column;
+            }
         }
 
         /* Anonymous message form */
@@ -773,22 +838,24 @@
 
         <!-- Stats Row -->
         <div class="stats-row fade-in">
-            <div class="stat-card">
-                <div class="counter-icon">
+            <div class="stat-card visitors-card">
+                <div class="stat-dot"></div>
+                <div class="stat-icon">
                     <i class="fas fa-eye"></i>
                 </div>
-                <div class="counter-info">
-                    <div class="count" id="visitor-count">...</div>
-                    <div class="count-label">Visitors</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="visitor-count">...</div>
+                    <div class="stat-label">Visitors</div>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="counter-icon" style="background: rgba(253, 121, 168, 0.15); color: var(--accent);">
-                    <i class="fas fa-envelope"></i>
+            <div class="stat-card messages-card">
+                <div class="stat-dot"></div>
+                <div class="stat-icon">
+                    <i class="fas fa-paper-plane"></i>
                 </div>
-                <div class="counter-info">
-                    <div class="count" id="message-count">...</div>
-                    <div class="count-label">Messages</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="message-count">...</div>
+                    <div class="stat-label">Messages</div>
                 </div>
             </div>
         </div>
