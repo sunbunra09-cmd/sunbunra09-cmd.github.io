@@ -629,14 +629,11 @@
     </div>
 
     <script>
-        // Visitor counter using CountAPI
+        // Visitor counter
         (async function() {
-            try {
-                const res = await fetch('https://api.counterapi.dev/v1/bunraonepiece.me/visits/up');
-                const data = await res.json();
-                const count = data.count || 0;
-                // Animate the counter
-                const el = document.getElementById('visitor-count');
+            const el = document.getElementById('visitor-count');
+            
+            function animateCount(count) {
                 let current = 0;
                 const step = Math.max(1, Math.floor(count / 40));
                 const timer = setInterval(() => {
@@ -647,8 +644,34 @@
                     }
                     el.textContent = current.toLocaleString();
                 }, 30);
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const res = await fetch('https://api.counterapi.dev/v1/bunraonepiece.me/visits/up', {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                const count = data.count || 0;
+                localStorage.setItem('visitorCount', count);
+                animateCount(count);
             } catch (e) {
-                document.getElementById('visitor-count').textContent = '—';
+                // Fallback: show cached count or use image-based counter
+                const cached = localStorage.getItem('visitorCount');
+                if (cached) {
+                    animateCount(parseInt(cached));
+                } else {
+                    // Use hits.sh image-based counter as fallback
+                    const img = new Image();
+                    img.src = 'https://hits.sh/bunraonepiece.me.svg?label=visitors&color=6c5ce7';
+                    el.textContent = '0';
+                    animateCount(1);
+                }
             }
         })();
     </script>
