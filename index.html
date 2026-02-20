@@ -356,6 +356,53 @@
         .fade-in:nth-child(9) { animation-delay: 0.9s; }
         .fade-in:nth-child(10) { animation-delay: 1.0s; }
 
+        /* Visitor counter */
+        .visitor-counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 30px;
+            padding: 18px 30px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .visitor-counter .counter-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(108, 92, 231, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary-light);
+        }
+
+        .visitor-counter .counter-info {
+            text-align: left;
+        }
+
+        .visitor-counter .counter-info .count {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .visitor-counter .counter-info .count-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .container {
@@ -563,6 +610,17 @@
 
         </div>
 
+        <!-- Visitor Counter -->
+        <div class="visitor-counter fade-in">
+            <div class="counter-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="counter-info">
+                <div class="count" id="visitor-count">...</div>
+                <div class="count-label">Total Visitors</div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <div class="footer fade-in">
             <p>&copy; 2026 Sunbunra. All rights reserved.</p>
@@ -570,5 +628,29 @@
 
     </div>
 
+    <script>
+        // Visitor counter using CountAPI
+        (async function() {
+            try {
+                const res = await fetch('https://api.counterapi.dev/v1/bunraonepiece.me/visits/up');
+                const data = await res.json();
+                const count = data.count || 0;
+                // Animate the counter
+                const el = document.getElementById('visitor-count');
+                let current = 0;
+                const step = Math.max(1, Math.floor(count / 40));
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= count) {
+                        current = count;
+                        clearInterval(timer);
+                    }
+                    el.textContent = current.toLocaleString();
+                }, 30);
+            } catch (e) {
+                document.getElementById('visitor-count').textContent = '—';
+            }
+        })();
+    </script>
 </body>
 </html>
