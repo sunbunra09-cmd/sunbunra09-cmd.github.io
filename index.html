@@ -620,6 +620,236 @@
                 padding: 14px 18px;
             }
         }
+
+        /* ABA Donation Card */
+        .donation-section {
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .donation-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .donation-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0072bc, #00a650);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .donation-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .donation-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(0, 166, 80, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #00a650;
+            flex-shrink: 0;
+        }
+
+        .donation-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .donation-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .aba-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #0072bc, #00a650);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .qr-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-btn {
+            cursor: pointer;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 166, 80, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .qr-btn:hover {
+            border-color: #00a650;
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(0, 166, 80, 0.25);
+        }
+
+        .qr-btn img {
+            display: block;
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            background: #fff;
+            padding: 10px;
+        }
+
+        .qr-hint {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .qr-hint i {
+            color: #00a650;
+            margin-right: 4px;
+        }
+
+        /* QR Modal */
+        .qr-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeModal 0.2s ease;
+        }
+
+        .qr-modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .qr-modal-inner {
+            background: #1a1a2e;
+            border: 1px solid rgba(0, 166, 80, 0.3);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 340px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .qr-modal-inner .close-modal {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: rgba(255,255,255,0.06);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .qr-modal-inner .close-modal:hover {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+
+        .qr-modal-inner .modal-aba-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #0072bc, #00a650);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .qr-modal-inner img {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 12px;
+            background: #fff;
+            padding: 12px;
+        }
+
+        .qr-modal-inner .modal-name {
+            margin-top: 14px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .qr-modal-inner .modal-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .qr-modal-inner .download-qr {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #0072bc, #00a650);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .qr-modal-inner .download-qr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 166, 80, 0.35);
+        }
     </style>
 </head>
 <body>
@@ -815,6 +1045,47 @@
 
         </div>
 
+        <!-- ABA Bank Donation -->
+        <div class="section-title fade-in">Support Me</div>
+        <div class="donation-section fade-in">
+            <div class="donation-card">
+                <div class="donation-header">
+                    <div class="donation-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <div>
+                        <h3>Buy Me a Coffee ☕</h3>
+                        <p>Support my work with a small donation</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="aba-badge"><i class="fas fa-university"></i> ABA Bank</span>
+                </div>
+                <div class="qr-wrapper">
+                    <div class="qr-btn" onclick="openQRModal()" title="Click to enlarge">
+                        <img src="image_2026-02-21_13-13-54.png" alt="ABA Bank QR Code">
+                    </div>
+                </div>
+                <p class="qr-hint"><i class="fas fa-expand-alt"></i> Tap QR code to enlarge &amp; download</p>
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div class="qr-modal" id="qrModal" onclick="closeQRModal(event)">
+            <div class="qr-modal-inner">
+                <button class="close-modal" onclick="document.getElementById('qrModal').classList.remove('active')">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="modal-aba-badge"><i class="fas fa-university"></i> ABA Bank</div>
+                <img src="image_2026-02-21_13-13-54.png" alt="ABA Bank QR Code">
+                <div class="modal-name">Sunbunra</div>
+                <div class="modal-sub">Scan with ABA Mobile or any banking app</div>
+                <a class="download-qr" href="image_2026-02-21_13-13-54.png" download="ABA-QR-Sunbunra.png">
+                    <i class="fas fa-download"></i> Save QR Code
+                </a>
+            </div>
+        </div>
+
         <!-- Anonymous Message -->
         <div class="section-title fade-in">Send Anonymous Message</div>
         <div class="anon-message fade-in">
@@ -868,7 +1139,28 @@
     </div>
 
     <script>
-        // Anonymous message via Telegram Bot
+        // ─────────────────────────────────────────────────────────────────────
+        // SECURITY FIX: Bot token moved off the client.
+        // Deploy cloudflare-worker.js to Cloudflare Workers (free tier) and
+        // replace the URL below with your Worker URL.
+        //   → https://dash.cloudflare.com/ → Workers & Pages → Create Worker
+        // ─────────────────────────────────────────────────────────────────────
+        const PROXY_URL = 'https://bunnra-telegram.sunbunra09.workers.dev';
+
+        // QR modal helpers
+        function openQRModal() {
+            document.getElementById('qrModal').classList.add('active');
+        }
+        function closeQRModal(e) {
+            if (e.target === document.getElementById('qrModal')) {
+                document.getElementById('qrModal').classList.remove('active');
+            }
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') document.getElementById('qrModal').classList.remove('active');
+        });
+
+        // Anonymous message via Cloudflare Worker proxy (token hidden server-side)
         async function sendAnonymousMessage() {
             const textarea = document.getElementById('anonMessage');
             const btn = document.getElementById('sendBtn');
@@ -881,24 +1173,22 @@
                 return;
             }
 
+            if (PROXY_URL === 'https://your-worker.workers.dev') {
+                status.className = 'msg-status error';
+                status.textContent = '⚠️ Proxy not configured yet. See cloudflare-worker.js.';
+                return;
+            }
+
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             status.className = 'msg-status';
             status.style.display = 'none';
 
-            const botToken = '8176614642:AAFnvzKiUkkg3eVd7rzdXOTaEWn4QRnFIoM';
-            const chatId = '629605778';
-            const text = '💬 *Anonymous Message*\n\n' + message + '\n\n_Sent from bunraonepiece.me_';
-
             try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                const res = await fetch(PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: text,
-                        parse_mode: 'Markdown'
-                    })
+                    body: JSON.stringify({ message })
                 });
 
                 const data = await res.json();
